@@ -1,13 +1,13 @@
 {
   "info": {
-    "title": "Ent Schema API",
-    "description": "This is an auto generated API description made out of an Ent schema definition",
+    "title": "API Tutor 42",
+    "description": "API to manage tutor events.",
     "termsOfService": "",
     "contact": {},
     "license": {
       "name": ""
     },
-    "version": "0.0.0"
+    "version": "0.0.1"
   },
   "paths": {
     "/events": {
@@ -18,26 +18,6 @@
           "Event"
         ],
         "operationId": "listEvent",
-        "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "description": "what page to render",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "itemsPerPage",
-            "in": "query",
-            "description": "item count to render per page",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "result Event list",
@@ -46,7 +26,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Event2724515510View"
+                    "$ref": "#/components/schemas/Event"
                   }
                 }
               }
@@ -80,6 +60,8 @@
                   "date_creation",
                   "date_end",
                   "date_start",
+                  "date_update",
+                  "description",
                   "name",
                   "nb_tutors"
                 ],
@@ -95,6 +77,13 @@
                   "date_start": {
                     "type": "string",
                     "format": "date-time"
+                  },
+                  "date_update": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "description": {
+                    "type": "string"
                   },
                   "name": {
                     "type": "string"
@@ -120,7 +109,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Event2724515510View"
+                  "$ref": "#/components/schemas/Event"
                 }
               }
             }
@@ -159,7 +148,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Event2724515510View"
+                  "$ref": "#/components/schemas/Event"
                 }
               }
             }
@@ -186,7 +175,7 @@
           {
             "name": "id",
             "in": "path",
-            "description": "ID of the Event to delete",
+            "description": "ID of the Event",
             "required": true,
             "schema": {
               "type": "string"
@@ -219,7 +208,7 @@
           {
             "name": "id",
             "in": "path",
-            "description": "ID of the Event to update",
+            "description": "ID of the Event",
             "required": true,
             "schema": {
               "type": "string"
@@ -235,6 +224,8 @@
                 "required": [
                   "date_end",
                   "date_start",
+                  "date_update",
+                  "description",
                   "name",
                   "nb_tutors"
                 ],
@@ -246,6 +237,13 @@
                   "date_start": {
                     "type": "string",
                     "format": "date-time"
+                  },
+                  "date_update": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "description": {
+                    "type": "string"
                   },
                   "name": {
                     "type": "string"
@@ -271,7 +269,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Event2724515510View"
+                  "$ref": "#/components/schemas/Event"
                 }
               }
             }
@@ -290,31 +288,13 @@
     },
     "/events/{id}/users": {
       "get": {
-        "summary": "Find the attached Users",
-        "description": "Find the attached Users of the Event with the given ID",
+        "summary": "List attached Users",
+        "description": "List attached Users.",
         "tags": [
           "Event"
         ],
         "operationId": "listEventUsers",
         "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "description": "what page to render",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "itemsPerPage",
-            "in": "query",
-            "description": "item count to render per page",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
           {
             "name": "id",
             "in": "path",
@@ -327,14 +307,114 @@
         ],
         "responses": {
           "200": {
-            "description": "Users attached to Event with requested ID was found",
+            "description": "result Events list",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/User2096419706View"
+                    "$ref": "#/components/schemas/User"
                   }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/events/{id}/users/{user_id}": {
+      "post": {
+        "summary": "Add user to an event",
+        "description": "Subscribe a user to an incoming event.",
+        "tags": [
+          "Event"
+        ],
+        "operationId": "subscribeEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the event",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "ID of the user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User subscribed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove user from an event",
+        "description": "Unsubscribe a user to an incoming event.",
+        "tags": [
+          "Event"
+        ],
+        "operationId": "unsubscribeEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the event",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "ID of the user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User unsubscribed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
                 }
               }
             }
@@ -359,26 +439,6 @@
           "User"
         ],
         "operationId": "listUser",
-        "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "description": "what page to render",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "itemsPerPage",
-            "in": "query",
-            "description": "item count to render per page",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "result User list",
@@ -387,7 +447,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/User2096419706View"
+                    "$ref": "#/components/schemas/User"
                   }
                 }
               }
@@ -421,6 +481,7 @@
                   "first_name",
                   "last_name",
                   "name",
+                  "token",
                   "tutor"
                 ],
                 "properties": {
@@ -439,6 +500,9 @@
                   "name": {
                     "type": "string"
                   },
+                  "token": {
+                    "type": "string"
+                  },
                   "tutor": {
                     "type": "boolean"
                   }
@@ -453,7 +517,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/User2096419706View"
+                  "$ref": "#/components/schemas/User"
                 }
               }
             }
@@ -492,7 +556,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/User2096419706View"
+                  "$ref": "#/components/schemas/User"
                 }
               }
             }
@@ -519,7 +583,7 @@
           {
             "name": "id",
             "in": "path",
-            "description": "ID of the User to delete",
+            "description": "ID of the User",
             "required": true,
             "schema": {
               "type": "string"
@@ -552,7 +616,7 @@
           {
             "name": "id",
             "in": "path",
-            "description": "ID of the User to update",
+            "description": "ID of the User",
             "required": true,
             "schema": {
               "type": "string"
@@ -569,6 +633,7 @@
                   "first_name",
                   "last_name",
                   "name",
+                  "token",
                   "tutor"
                 ],
                 "properties": {
@@ -587,6 +652,9 @@
                   "name": {
                     "type": "string"
                   },
+                  "token": {
+                    "type": "string"
+                  },
                   "tutor": {
                     "type": "boolean"
                   }
@@ -601,7 +669,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/User2096419706View"
+                  "$ref": "#/components/schemas/User"
                 }
               }
             }
@@ -620,31 +688,13 @@
     },
     "/users/{id}/events": {
       "get": {
-        "summary": "Find the attached Events",
-        "description": "Find the attached Events of the User with the given ID",
+        "summary": "List attached Events",
+        "description": "List attached Events.",
         "tags": [
           "User"
         ],
         "operationId": "listUserEvents",
         "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "description": "what page to render",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "itemsPerPage",
-            "in": "query",
-            "description": "item count to render per page",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
           {
             "name": "id",
             "in": "path",
@@ -657,13 +707,13 @@
         ],
         "responses": {
           "200": {
-            "description": "Events attached to User with requested ID was found",
+            "description": "result Users list",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Event2724515510View"
+                    "$ref": "#/components/schemas/Event"
                   }
                 }
               }
@@ -684,12 +734,14 @@
   },
   "components": {
     "schemas": {
-      "Event2724515510View": {
+      "Event": {
         "type": "object",
         "required": [
           "date_creation",
           "date_end",
           "date_start",
+          "date_update",
+          "description",
           "id",
           "name",
           "nb_tutors"
@@ -707,6 +759,13 @@
             "type": "string",
             "format": "date-time"
           },
+          "date_update": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string"
+          },
           "id": {
             "type": "string"
           },
@@ -716,19 +775,32 @@
           "nb_tutors": {
             "type": "integer",
             "format": "int32"
+          },
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/User"
+            }
           }
         }
       },
-      "User2096419706View": {
+      "User": {
         "type": "object",
         "required": [
           "first_name",
           "id",
           "last_name",
           "name",
+          "token",
           "tutor"
         ],
         "properties": {
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Event"
+            }
+          },
           "first_name": {
             "type": "string"
           },
@@ -739,6 +811,9 @@
             "type": "string"
           },
           "name": {
+            "type": "string"
+          },
+          "token": {
             "type": "string"
           },
           "tutor": {
@@ -774,7 +849,7 @@
         }
       },
       "403": {
-        "description": "user misses permission",
+        "description": "insufficient permissions",
         "content": {
           "application/json": {
             "schema": {
