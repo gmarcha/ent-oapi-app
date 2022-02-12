@@ -1,4 +1,4 @@
-# goswagger-ent-app
+# ent-oapi-app, with gin
 Simple API using entgo, and oapi-codegen with gin.
 
 - [goent](https://entgo.io/docs/getting-started), ORM for database access.
